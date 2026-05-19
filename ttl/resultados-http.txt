@@ -1,0 +1,72 @@
+Escuchando en la interfaz: br-bc56c95de01d
+Filtro BPF: src host 10.0.2.10 and dst host 10.0.1.10 and (icmp or (tcp and (port 80 or port 22)))
+============================================================
+Paquete capturado: 10.0.2.10 -> 10.0.1.10
+TTL observado: 64
+Protocolo: TCP
+Puerto origen: 52616
+Puerto destino: 80
+Flags: S
+Ventana TCP: 64240
+Opciones TCP: [('MSS', 1460), ('SAckOK', b''), ('Timestamp', (3760983141, 0)), ('NOP', None), ('WScale', 10)]
+Sistema operativo inferido: Linux/Unix
+============================================================
+Paquete capturado: 10.0.2.10 -> 10.0.1.10
+TTL observado: 64
+Protocolo: TCP
+Puerto origen: 52616
+Puerto destino: 80
+Flags: A
+Ventana TCP: 63
+Opciones TCP: [('NOP', None), ('NOP', None), ('Timestamp', (3760983141, 2575806425))]
+Sistema operativo inferido: Linux/Unix
+============================================================
+Paquete capturado: 10.0.2.10 -> 10.0.1.10
+TTL observado: 64
+Protocolo: TCP
+Puerto origen: 52616
+Puerto destino: 80
+Flags: PA
+Ventana TCP: 63
+Opciones TCP: [('NOP', None), ('NOP', None), ('Timestamp', (3760983141, 2575806425))]
+Sistema operativo inferido: Linux/Unix
+============================================================
+Paquete capturado: 10.0.2.10 -> 10.0.1.10
+TTL observado: 64
+Protocolo: TCP
+Puerto origen: 52616
+Puerto destino: 80
+Flags: A
+Ventana TCP: 63
+Opciones TCP: [('NOP', None), ('NOP', None), ('Timestamp', (3760983142, 2575806426))]
+Sistema operativo inferido: Linux/Unix
+============================================================
+Paquete capturado: 10.0.2.10 -> 10.0.1.10
+TTL observado: 64
+Protocolo: TCP
+Puerto origen: 52616
+Puerto destino: 80
+Flags: A
+Ventana TCP: 63
+Opciones TCP: [('NOP', None), ('NOP', None), ('Timestamp', (3760983142, 2575806426))]
+Sistema operativo inferido: Linux/Unix
+============================================================
+Paquete capturado: 10.0.2.10 -> 10.0.1.10
+TTL observado: 64
+Protocolo: TCP
+Puerto origen: 52616
+Puerto destino: 80
+Flags: FA
+Ventana TCP: 63
+Opciones TCP: [('NOP', None), ('NOP', None), ('Timestamp', (3760983142, 2575806426))]
+Sistema operativo inferido: Linux/Unix
+============================================================
+Paquete capturado: 10.0.2.10 -> 10.0.1.10
+TTL observado: 64
+Protocolo: TCP
+Puerto origen: 52616
+Puerto destino: 80
+Flags: A
+Ventana TCP: 63
+Opciones TCP: [('NOP', None), ('NOP', None), ('Timestamp', (3760983142, 2575806426))]
+Sistema operativo inferido: Linux/Unix

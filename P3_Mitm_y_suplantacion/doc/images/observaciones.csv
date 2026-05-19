@@ -1,0 +1,6 @@
+fase,indicador,evidencia,interpretacion,riesgo
+Línea base,Resolución ARP normal,La IP 192.168.56.1 se asocia a 08:00:27:aa:bb:01.,El tráfico de la víctima sale directamente hacia la puerta de enlace.,Bajo
+Suplantación,Duplicidad IP/MAC,La IP 192.168.56.1 aparece asociada a 08:00:27:de:ad:03.,La caché ARP de la víctima acepta al equipo atacante como gateway.,Alto
+Intercepción,Tráfico reenviado,"ICMP y HTTP siguen funcionando, pero pasan por el equipo atacante.",La disponibilidad se mantiene y el usuario no percibe el cambio de ruta.,Alto
+Validación HTTPS,Contenido cifrado,TLS protege el contenido de la sesion aunque el flujo sea observable.,"El MITM ve metadatos, pero no credenciales cifradas sin romper la validación TLS.",Medio
+Restauración,ARP restablecido,La IP 192.168.56.1 vuelve a 08:00:27:aa:bb:01.,La red recupera el encaminamiento normal al limpiar la suplantación.,Bajo

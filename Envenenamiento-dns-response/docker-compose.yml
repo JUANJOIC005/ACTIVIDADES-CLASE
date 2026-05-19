@@ -1,0 +1,67 @@
+version: "3.9"
+
+services:
+  dns-server:
+    image: alpine:latest
+    container_name: dns-server
+    networks:
+      lab-net:
+        ipv4_address: 10.5.0.10
+    command:
+      - /bin/sh
+      - -c
+      - |
+        apk add --no-cache coredns
+        cat > /Corefile <<'EOF'
+        .:53 {
+            log
+            errors
+            hosts {
+                10.5.0.30 mi-web.com
+                fallthrough
+            }
+            forward . 8.8.8.8
+        }
+        EOF
+        coredns -conf /Corefile
+
+  web-server:
+    image: nginx:alpine
+    container_name: web-server
+    networks:
+      lab-net:
+        ipv4_address: 10.5.0.30
+    volumes:
+      - ./web:/usr/share/nginx/html:ro
+
+  fake-server:
+    image: nginx:alpine
+    container_name: fake-server
+    networks:
+      lab-net:
+        ipv4_address: 10.5.0.40
+    volumes:
+      - ./fake:/usr/share/nginx/html:ro
+
+  client:
+    image: alpine:latest
+    container_name: client
+    depends_on:
+      - dns-server
+    networks:
+      lab-net:
+        ipv4_address: 10.5.0.20
+    command:
+      - /bin/sh
+      - -c
+      - |
+        apk add --no-cache curl bind-tools iputils busybox-extras
+        echo 'nameserver 10.5.0.10' > /etc/resolv.conf
+        tail -f /dev/null
+
+networks:
+  lab-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.5.0.0/24

@@ -1,0 +1,44 @@
+services:
+  ftp:
+    image: fauria/vsftpd
+    container_name: ftp_srv
+    restart: unless-stopped
+    environment:
+      FTP_USER: juanjo
+      FTP_PASS: 123
+      PASV_ADDRESS: 127.0.0.1
+      PASV_MIN_PORT: 21100
+      PASV_MAX_PORT: 21110
+    ports:
+      - "21:21"
+      - "21100-21110:21100-21110"
+    networks:
+      - red_lab
+
+  ssh:
+    image: lscr.io/linuxserver/openssh-server:latest
+    container_name: ssh_srv
+    restart: unless-stopped
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: Europe/Madrid
+      USER_NAME: juanjo
+      USER_PASSWORD: 123
+    ports:
+      - "2222:2222"
+    networks:
+      - red_lab
+
+  http:
+    image: nginx:alpine
+    container_name: http_srv
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    networks:
+      - red_lab
+
+networks:
+  red_lab:
+    driver: bridge

@@ -1,0 +1,142 @@
+Escuchando en la interfaz: br-793541cfe1e0
+Filtro BPF: src host 10.0.2.10 and dst host 10.0.1.10 and (icmp or (tcp and (port 80 or port 22)))
+============================================================
+Paquete capturado: 10.0.2.10 -> 10.0.1.10
+TTL observado: 62
+Protocolo: ICMP
+Tipo ICMP: 8
+Código ICMP: 0
+Sistema operativo inferido: Linux/Unix
+============================================================
+Paquete capturado: 10.0.2.10 -> 10.0.1.10
+TTL observado: 62
+Protocolo: ICMP
+Tipo ICMP: 8
+Código ICMP: 0
+Sistema operativo inferido: Linux/Unix
+============================================================
+Paquete capturado: 10.0.2.10 -> 10.0.1.10
+TTL observado: 62
+Protocolo: ICMP
+Tipo ICMP: 8
+Código ICMP: 0
+Sistema operativo inferido: Linux/Unix
+============================================================
+Paquete capturado: 10.0.2.10 -> 10.0.1.10
+TTL observado: 62
+Protocolo: ICMP
+Tipo ICMP: 8
+Código ICMP: 0
+Sistema operativo inferido: Linux/Unix
+============================================================
+Paquete capturado: 10.0.2.10 -> 10.0.1.10
+TTL observado: 62
+Protocolo: ICMP
+Tipo ICMP: 8
+Código ICMP: 0
+Sistema operativo inferido: Linux/Unix
+============================================================
+Paquete capturado: 10.0.2.10 -> 10.0.1.10
+TTL observado: 62
+Protocolo: ICMP
+Tipo ICMP: 8
+Código ICMP: 0
+Sistema operativo inferido: Linux/Unix
+============================================================
+Paquete capturado: 10.0.2.10 -> 10.0.1.10
+TTL observado: 62
+Protocolo: ICMP
+Tipo ICMP: 8
+Código ICMP: 0
+Sistema operativo inferido: Linux/Unix
+============================================================
+Paquete capturado: 10.0.2.10 -> 10.0.1.10
+TTL observado: 62
+Protocolo: ICMP
+Tipo ICMP: 8
+Código ICMP: 0
+Sistema operativo inferido: Linux/Unix
+============================================================
+Paquete capturado: 10.0.2.10 -> 10.0.1.10
+TTL observado: 62
+Protocolo: ICMP
+Tipo ICMP: 8
+Código ICMP: 0
+Sistema operativo inferido: Linux/Unix
+============================================================
+Paquete capturado: 10.0.2.10 -> 10.0.1.10
+TTL observado: 62
+Protocolo: ICMP
+Tipo ICMP: 8
+Código ICMP: 0
+Sistema operativo inferido: Linux/Unix
+============================================================
+Paquete capturado: 10.0.2.10 -> 10.0.1.10
+TTL observado: 62
+Protocolo: ICMP
+Tipo ICMP: 8
+Código ICMP: 0
+Sistema operativo inferido: Linux/Unix
+============================================================
+Paquete capturado: 10.0.2.10 -> 10.0.1.10
+TTL observado: 62
+Protocolo: ICMP
+Tipo ICMP: 8
+Código ICMP: 0
+Sistema operativo inferido: Linux/Unix
+============================================================
+Paquete capturado: 10.0.2.10 -> 10.0.1.10
+TTL observado: 62
+Protocolo: ICMP
+Tipo ICMP: 8
+Código ICMP: 0
+Sistema operativo inferido: Linux/Unix
+============================================================
+Paquete capturado: 10.0.2.10 -> 10.0.1.10
+TTL observado: 62
+Protocolo: ICMP
+Tipo ICMP: 8
+Código ICMP: 0
+Sistema operativo inferido: Linux/Unix
+============================================================
+Paquete capturado: 10.0.2.10 -> 10.0.1.10
+TTL observado: 62
+Protocolo: ICMP
+Tipo ICMP: 8
+Código ICMP: 0
+Sistema operativo inferido: Linux/Unix
+============================================================
+Paquete capturado: 10.0.2.10 -> 10.0.1.10
+TTL observado: 62
+Protocolo: ICMP
+Tipo ICMP: 8
+Código ICMP: 0
+Sistema operativo inferido: Linux/Unix
+============================================================
+Paquete capturado: 10.0.2.10 -> 10.0.1.10
+TTL observado: 62
+Protocolo: ICMP
+Tipo ICMP: 8
+Código ICMP: 0
+Sistema operativo inferido: Linux/Unix
+============================================================
+Paquete capturado: 10.0.2.10 -> 10.0.1.10
+TTL observado: 62
+Protocolo: ICMP
+Tipo ICMP: 8
+Código ICMP: 0
+Sistema operativo inferido: Linux/Unix
+============================================================
+Paquete capturado: 10.0.2.10 -> 10.0.1.10
+TTL observado: 62
+Protocolo: ICMP
+Tipo ICMP: 8
+Código ICMP: 0
+Sistema operativo inferido: Linux/Unix
+============================================================
+Paquete capturado: 10.0.2.10 -> 10.0.1.10
+TTL observado: 62
+Protocolo: ICMP
+Tipo ICMP: 8
+Código ICMP: 0
+Sistema operativo inferido: Linux/Unix

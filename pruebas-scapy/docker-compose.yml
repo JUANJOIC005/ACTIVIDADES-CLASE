@@ -1,0 +1,15 @@
+services:
+  alpine:
+    image: alpine
+    container_name: lab_alpine
+    # netcap: 
+    #   CAP
+    # hay un campo que permite al contenedor controlar su tabla arp
+    
+    networks:
+      - my-network
+    command: "sleep infinity"
+
+networks:
+  my-network:
+    name: my-custom-net

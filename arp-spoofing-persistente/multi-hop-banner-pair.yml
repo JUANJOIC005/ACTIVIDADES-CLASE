@@ -1,0 +1,105 @@
+services:
+  # --- ENDPOINTS ---
+  app1:
+    image: nginx:alpine
+    container_name: app1
+    cap_add: [NET_ADMIN]
+    networks:
+      net1:
+        ipv4_address: 10.0.1.10
+    # We use a trick here: set the route then call the original nginx entrypoint
+    entrypoint: >
+      sh -c "ip route replace default via 10.0.1.254 && 
+             echo '<h1>APP1 SERVER (10.0.1.10)</h1>' > /usr/share/nginx/html/index.html &&
+             exec nginx -g 'daemon off;'"
+
+  # APP2: The Client (using official Curl image)
+  app2:
+    image: curlimages/curl:latest
+    container_name: app2
+    cap_add: [NET_ADMIN]
+    user: root # Needed to change network routes
+    networks:
+      net2:
+        ipv4_address: 10.0.2.10
+    # Keep it alive so students can 'exec' into it
+    entrypoint: >
+      sh -c "ip route replace default via 10.0.2.254 && 
+             sleep infinity"
+
+# APP3: The SSH Server
+  app3:
+    image: lscr.io/linuxserver/openssh-server:latest
+    container_name: app3
+    cap_add: [NET_ADMIN]
+    environment:
+      - USER_NAME=ssh-user
+      - LISTEN_PORT=22
+      - PASSWORD_ACCESS=true
+      - USER_PASSWORD=password123
+    networks:
+      net1:
+        ipv4_address: 10.0.1.20
+    entrypoint: >
+      /bin/bash -c "ip route replace default via 10.0.1.254 && 
+                    exec /init"
+  # --- ROUTER 1 (Edge Router A) ---
+  router-1:
+    image: alpine:latest
+    container_name: router-1
+    cap_add: [NET_ADMIN]
+    sysctls:
+      - net.ipv4.ip_forward=1
+    networks:
+      net1:
+        ipv4_address: 10.0.1.254
+      net12:
+        ipv4_address: 10.0.12.1
+    # Needs to know that Net-2 is accessible via Router-2
+    command: sh -c "ip route add 10.0.2.0/24 via 10.0.12.2 && sleep infinity"
+
+  # --- ROUTER 2 (The Middleman) ---
+  router-2:
+    image: alpine:latest
+    container_name: router-2
+    cap_add: [NET_ADMIN]
+    sysctls:
+      - net.ipv4.ip_forward=1
+    networks:
+      net12:
+        ipv4_address: 10.0.12.2
+      net23:
+        ipv4_address: 10.0.23.1
+    command: >
+      sh -c "ip route add 10.0.1.0/24 via 10.0.12.1 && 
+             ip route add 10.0.2.0/24 via 10.0.23.2 && 
+             sleep infinity"
+
+  # --- ROUTER 3 (Edge Router B) ---
+  router-3:
+    image: alpine:latest
+    container_name: router-3
+    cap_add: [NET_ADMIN]
+    sysctls:
+      - net.ipv4.ip_forward=1
+    networks:
+      net23:
+        ipv4_address: 10.0.23.2
+      net2:
+        ipv4_address: 10.0.2.254
+    # Needs to know that Net-1 is accessible via Router-2
+    command: sh -c "ip route add 10.0.1.0/24 via 10.0.23.1 && sleep infinity"
+
+networks:
+  net1:
+    ipam:
+      config: [{subnet: 10.0.1.0/24, gateway: 10.0.1.1}]
+  net12:
+    ipam:
+      config: [{subnet: 10.0.12.0/24, gateway: 10.0.12.254}] # Host takes .254 here
+  net23:
+    ipam:
+      config: [{subnet: 10.0.23.0/24, gateway: 10.0.23.254}] # Host takes .254 here
+  net2:
+    ipam:
+      config: [{subnet: 10.0.2.0/24, gateway: 10.0.2.1}]
