@@ -82,15 +82,184 @@ Se consideraron tres criterios:
 Estos criterios permiten diferenciar entre una interrupción de red y un MITM funcional. Una pérdida de conectividad sería visible para el usuario y tendría valor limitado para interceptar información; en cambio, una redirección con reenvío mantiene la sesión activa y aumenta el riesgo.
 
 = Resultados
-
-== Evidencia de caché ARP
+== Servicios activos
 
 #figure(
-  image("images/comparacion_cache_arp.png", width: 100%),
-  caption: [Comparación contextualizada de la caché ARP antes, durante y después de la suplantación.]
+  image("images/Captura de pantalla 2026-05-18 235214.png", width: 100%),
+  caption: [Estado de los contenedores Docker utilizados en el laboratorio.]
 )
 
-La evidencia central es el cambio temporal de MAC para la IP `192.168.56.1`. Antes y después de la prueba, la puerta de enlace se asocia a `08:00:27:aa:bb:01`. Durante la suplantación, esa misma IP aparece asociada a `08:00:27:de:ad:03`, que corresponde al equipo auditor. Esta anomalía explica por qué el tráfico de la víctima puede atravesar un equipo intermedio.
+La captura anterior muestra todos los servicios activos correctamente desplegados mediante Docker Compose.
+
+== Configuración de la red DNS
+
+#figure(
+  image("images/Captura de pantalla 2026-05-18 235356.png", width: 95%),
+  caption: [Inspección de la red virtual DNS mediante Docker.]
+)
+
+Se observa la configuración de la red `10.10.30.0/24`, utilizada para el escenario DNS.
+
+= Parte 1 — Detección de ARP Spoofing
+
+== Fundamentos teóricos
+
+El protocolo ARP (Address Resolution Protocol) permite asociar direcciones IP con direcciones MAC dentro de redes locales Ethernet. Debido a que ARP carece de mecanismos de autenticación, un atacante puede enviar respuestas ARP falsas modificando las tablas ARP de otros equipos.
+
+Esta técnica se conoce como ARP Spoofing o ARP Poisoning y permite:
+
+- Interceptar tráfico.
+- Realizar ataques MITM.
+- Redirigir comunicaciones.
+- Capturar credenciales.
+
+== Verificación de conectividad
+
+#figure(
+  image("images/Captura de pantalla 2026-05-18 235425.png", width: 90%),
+  caption: [Comprobación de conectividad entre la víctima y el router.]
+)
+
+Se verifica la resolución ARP correcta antes del ataque.
+
+== Implementación del IDS ARP
+
+Se desarrolló la función `alert_arpspoof.py` utilizando Scapy para monitorizar respuestas ARP en tiempo real.
+
+La lógica implementada realiza:
+
+- Monitorización de paquetes ARP.
+- Asociación IP ↔ MAC legítima.
+- Detección de cambios inesperados.
+- Generación de alertas en consola.
+
+== Monitorización activa
+
+#figure(
+  image("images/Captura de pantalla 2026-05-18 235446.png", width: 85%),
+  caption: [Sistema IDS monitorizando tráfico ARP.]
+)
+
+== Generación del ataque
+
+El tráfico malicioso se genera mediante el script `generate_arp_spoof.py`.
+
+#figure(
+  image("images/Captura de pantalla 2026-05-18 235851.png", width: 92%),
+  caption: [Generación de tráfico ARP falso desde el atacante.]
+)
+
+El atacante envía respuestas ARP manipuladas intentando asociar la IP del router con la MAC del atacante.
+
+== Resultado de la detección
+
+#figure(
+  image("images/Captura de pantalla 2026-05-18 235858.png", width: 92%),
+  caption: [Monitorización de respuestas ARP y validación del comportamiento.]
+)
+
+El sistema IDS es capaz de detectar cambios de asociación IP/MAC y monitorizar anomalías en tiempo real.
+
+== Validación de acceso al servidor web
+
+#figure(
+  image("images/Captura de pantalla 2026-05-18 235952.png", width: 90%),
+  caption: [Conectividad hacia el servidor web desde la víctima.]
+)
+
+== Captura de tráfico ARP
+
+#figure(
+  image("images/Captura de pantalla 2026-05-19 000000.png", width: 100%),
+  caption: [Captura de tráfico ARP mediante tcpdump.]
+)
+
+La captura evidencia el intercambio ARP dentro de la red local y permite validar el comportamiento del protocolo.
+
+== Uso de Bettercap
+
+Bettercap fue utilizado para automatizar el proceso de envenenamiento ARP.
+
+#figure(
+  image("images/Captura de pantalla 2026-05-19 000021.png", width: 100%),
+  caption: [Configuración y ejecución de Bettercap.]
+)
+
+== Evidencia del cambio ARP
+
+#figure(
+  image("images/Captura de pantalla 2026-05-19 000114.png", width: 80%),
+  caption: [Visualización de la tabla ARP alterada.]
+)
+
+La víctima termina asociando la dirección IP del router con la MAC del atacante, demostrando el éxito del ataque MITM.
+
+= Parte 2 — DNS Snooping y Suplantación DNS
+
+== Fundamentos teóricos
+
+Los ataques relacionados con DNS permiten obtener información sobre la infraestructura interna o manipular respuestas DNS.
+
+El ataque de Kaminsky explota la predictibilidad de ciertas consultas DNS para introducir registros falsos en caché. Además, el envío masivo de consultas hacia subdominios inexistentes permite:
+
+- Enumerar infraestructura.
+- Analizar comportamiento DNS.
+- Detectar resolutores vulnerables.
+- Saturar mecanismos de caché.
+
+== Configuración del cliente DNS
+
+#figure(
+  image("images/Captura de pantalla 2026-05-28 032122.png", width: 95%),
+  caption: [Configuración DNS del cliente y resolución de nombres.]
+)
+
+La resolución DNS se realiza correctamente a través del resolver `10.10.30.53`.
+
+== Generación de tráfico DNS malicioso
+
+#figure(
+  image("images/Captura de pantalla 2026-05-28 032226.png", width: 92%),
+  caption: [Generación automatizada de consultas DNS sospechosas.]
+)
+
+El script genera consultas hacia subdominios aleatorios inexistentes dentro del dominio `lab.local`.
+
+== Captura del tráfico DNS
+
+#figure(
+  image("images/Captura de pantalla 2026-05-28 032632.png", width: 100%),
+  caption: [Captura de tráfico DNS mediante tcpdump.]
+)
+
+Se observan múltiples respuestas `NXDOMAIN`, patrón típico asociado a ataques de DNS Snooping o intentos de reconocimiento.
+
+== Implementación del IDS DNS
+
+La función `alert_dnssnooping.py` implementa un mecanismo de detección basado en umbrales.
+
+El IDS analiza:
+
+- Número de consultas DNS.
+- Frecuencia temporal.
+- Existencia del subdominio.
+- Respuestas NXDOMAIN.
+
+Cuando el volumen de consultas supera el umbral definido, el sistema genera una alerta indicando actividad potencialmente maliciosa.
+
+= Análisis técnico
+
+== ARP Spoofing
+
+La práctica demuestra que ARP es un protocolo inherentemente inseguro debido a la ausencia de autenticación. Un atacante conectado al mismo segmento Ethernet puede manipular fácilmente las tablas ARP.
+
+La detección basada en monitorización de asociaciones IP/MAC resulta efectiva para identificar anomalías en redes locales.
+
+== DNS Snooping
+
+Las ráfagas de consultas DNS hacia dominios inexistentes constituyen un patrón característico de reconocimiento y fingerprinting.
+
+El uso de umbrales permite detectar actividades anómalas minimizando falsos positivos.
 
 == Hallazgos contextualizados
 
