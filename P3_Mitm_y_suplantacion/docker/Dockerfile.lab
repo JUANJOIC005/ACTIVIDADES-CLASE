@@ -1,0 +1,19 @@
+FROM python:3.12-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+      curl \
+      dnsutils \
+      iproute2 \
+      iputils-ping \
+      net-tools \
+      tcpdump \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY src/requirements-lab.txt /tmp/requirements-lab.txt
+RUN pip install --no-cache-dir -r /tmp/requirements-lab.txt
+
+WORKDIR /lab
